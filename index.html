@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content × Audience - Kent State MCLS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e1c2b; --ink2:#16293a; --ink3:#1f3850;
+    --paper:#eceef0; --card:#fff; --line:#dde2e6; --line-d:#cbd3d9;
+    --text:#16293a; --muted:#5f7180; --muted2:#8a99a4;
+    --teal:#1fb6c4; --teal-d:#0f8a96;
+    --gold:#e0a64a; --gold-d:#b07e25;
+    --rust:#cf5a3c; --rust-d:#a8462d;
+    --blue:#1f6f8f; --blue-d:#155269;
+    --slate:#7c8a96;
+    --teal-soft:#e2f4f6; --gold-soft:#f8eed8; --rust-soft:#f8e4dd; --slate-soft:#eceff1; --blue-soft:#e1eef3;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--text);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+  /* ---------- STAGE (dark instrument zone) ---------- */
+  .stage{background:var(--ink);color:#dfe7ec;position:relative;overflow:hidden}
+  .stage::before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(#ffffff09 1px,transparent 1px),linear-gradient(90deg,#ffffff09 1px,transparent 1px);
+    background-size:46px 46px;mask-image:radial-gradient(ellipse 90% 75% at 72% 28%,#000 30%,transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 90% 75% at 72% 28%,#000 30%,transparent 80%);pointer-events:none}
+  .stage-inner{max-width:1180px;margin:0 auto;padding:30px 34px 60px;position:relative;z-index:1}
+
+  .reg{display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding-bottom:22px;border-bottom:1px solid #ffffff1a;flex-wrap:wrap}
+  .reg .mark{font-family:"Archivo",sans-serif;font-weight:800;letter-spacing:.02em;font-size:15px;color:#fff;display:flex;align-items:center;gap:11px}
+  .reg .mark i{width:11px;height:11px;border-radius:50%;background:var(--teal);
+    box-shadow:0 0 0 4px #1fb6c433, 0 0 14px 2px #1fb6c4aa;font-style:normal;display:inline-block}
+  .reg .coords{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted2);letter-spacing:.06em}
+
+  .hero{padding:46px 0 10px;max-width:900px}
+  .hero h1{font-family:"Archivo",sans-serif;font-weight:800;letter-spacing:-.015em;
+    font-size:clamp(34px,5.6vw,60px);line-height:1.03;margin:16px 0 0;color:#fff}
+  .hero h1 em{font-style:normal;color:var(--teal)}
+  .hero h1 .ru{font-style:normal;color:var(--gold)}
+  .hero .thesis{font-size:clamp(16px,2vw,19px);color:#b6c4cd;max-width:680px;margin:22px 0 0}
+  .hero .thesis b{color:#fff;font-weight:600}
+
+  .stats{display:flex;flex-wrap:wrap;gap:0;margin:40px 0 0;border:1px solid #ffffff1f;border-radius:12px;overflow:hidden;background:#ffffff08}
+  .stat{flex:1 1 0;min-width:150px;padding:18px 22px;border-right:1px solid #ffffff14}
+  .stat:last-child{border-right:0}
+  .stat .v{font-family:"Archivo",sans-serif;font-weight:800;font-size:30px;color:#fff;line-height:1}
+  .stat .v small{font-size:15px;color:var(--teal);font-weight:700}
+  .stat .v.rust small{color:var(--gold)}
+  .stat .l{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);margin-top:8px}
+
+  .note{margin:26px 0 0;background:#ffffff0a;border:1px solid #ffffff1f;border-left:3px solid var(--gold);
+    border-radius:10px;padding:18px 22px}
+  .note .h{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+  .note p{margin:0;font-size:14.5px;color:#c3cfd7}
+  .note p b{color:#fff;font-weight:600}
+
+  /* figure (bar rows) */
+  .fig{margin:56px 0 0}
+  .fig-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:14px}
+  .fig-head .t{font-family:"Archivo",sans-serif;font-weight:700;font-size:24px;color:#fff;margin:6px 0 0;letter-spacing:-.01em}
+  .fig-head .t small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:500;margin-bottom:5px}
+  .fig-head .d{font-size:13.5px;color:#9fb0ba;max-width:520px;margin:0}
+  .panel{background:linear-gradient(180deg,#102236,#0c1826);border:1px solid #ffffff1f;border-radius:16px;
+    padding:14px 22px 18px;box-shadow:inset 0 1px 0 #ffffff10, 0 24px 60px -30px #000}
+
+  .prow{display:grid;grid-template-columns:24px minmax(150px,1.6fr) 1fr 52px 86px;align-items:center;gap:15px;
+    padding:10px 0;border-top:1px solid #ffffff12}
+  .prow:first-child{border-top:0}
+  .prank{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#5f7180}
+  .plabel{font-size:13.5px;color:#dfe7ec;font-weight:500;line-height:1.3}
+  .plabel span{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#7c8a96;margin-top:2px;letter-spacing:.02em}
+  .pbar{height:8px;border-radius:4px;background:#ffffff12;overflow:hidden}
+  .pbar>i{display:block;height:100%;border-radius:4px}
+  .pscore{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#aab8c1;text-align:right}
+  .pstat{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;text-transform:uppercase;
+    letter-spacing:.04em;text-align:center;padding:4px 0;border-radius:999px}
+  .pstat.gap{background:#5a2317;color:#f0a892}
+  .pstat.thin{background:#5a4416;color:#e7b76a}
+  .pstat.str{background:#0a3d44;color:#5fe0ec}
+  .pstat.over{background:#2b333a;color:#9fb0ba}
+  .pstat.make{background:#0a3d44;color:#5fe0ec}
+  .pstat.amp{background:#5a4416;color:#e7b76a}
+  .pstat.seed{background:#123b42;color:#6fcdd8}
+  .pstat.skip{background:#2b333a;color:#8a99a4}
+  .pnote{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#7c8a96;margin:15px 0 0;letter-spacing:.02em;line-height:1.55}
+  @media(max-width:680px){.prow{grid-template-columns:20px 1fr 50px 80px}.pbar{display:none}}
+
+  /* ---------- PAPER sections ---------- */
+  .paper{max-width:1180px;margin:0 auto;padding:74px 34px 30px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  .sec-head .idx{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--teal-d);font-weight:600;letter-spacing:.05em}
+  .sec-head h2{font-family:"Archivo",sans-serif;font-weight:700;font-size:clamp(24px,3.4vw,33px);
+    letter-spacing:-.015em;margin:0;color:var(--ink)}
+  .sec-lead{color:var(--muted);font-size:15.5px;max-width:800px;margin:0 0 26px}
+  .sec-lead b{color:var(--text);font-weight:600}
+
+  .tablecard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:#f4f6f7;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:#f8fafb}
+  td.cluster{font-weight:600;color:var(--ink);white-space:nowrap}
+  td.signal{color:var(--muted);font-size:12.5px;max-width:330px}
+  td.num{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:16px;text-align:center;width:58px;color:var(--ink)}
+  .bar{position:relative;height:6px;border-radius:3px;background:#e7ebee;width:90px;margin-top:7px;overflow:hidden}
+  .bar>i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+  .verdict{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .v-gap{background:var(--rust-soft);color:var(--rust-d)}
+  .v-thin{background:var(--gold-soft);color:var(--gold-d)}
+  .v-str{background:var(--teal-soft);color:var(--teal-d)}
+  .v-over{background:var(--slate-soft);color:var(--slate)}
+  .footnote{font-size:12px;color:var(--muted2);margin-top:12px;font-family:"IBM Plex Mono",monospace;line-height:1.6}
+
+  /* gap cards */
+  .gaps{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:760px){.gaps{grid-template-columns:1fr}}
+  .gc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
+  .gc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--rust)}
+  .gc.amber::before{background:var(--gold)}
+  .gc .rk{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--rust-d);font-weight:600;display:flex;align-items:center;gap:8px}
+  .gc.amber .rk{color:var(--gold-d)}
+  .gc .rk i{width:7px;height:7px;border-radius:50%;border:1.5px dashed var(--rust);display:inline-block}
+  .gc.amber .rk i{border:1.5px solid var(--gold)}
+  .gc h3{font-family:"Archivo",sans-serif;font-weight:700;font-size:19px;margin:9px 0 8px;color:var(--ink);letter-spacing:-.01em}
+  .gc p{margin:0 0 13px;font-size:13.5px;color:var(--muted)}
+  .gc .pitch{margin:2px 0 14px;background:var(--teal-soft);border:1px solid #cfe9ed;border-radius:11px;padding:13px 15px}
+  .gc .pitch .lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--teal-d);font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .gc .pitch .lab .pen{width:13px;height:13px;flex:0 0 auto;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f8a96' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l4-1L18 7l-3-3L4 15z'/%3E%3Cpath d='M13 5l3 3'/%3E%3C/svg%3E") center/contain no-repeat}
+  .gc .pitch .ptitle{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px;color:var(--ink);line-height:1.28;margin-bottom:6px}
+  .gc .pitch .pangle{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .gc .why{font-size:12.5px;background:#f5f7f8;border-radius:9px;padding:11px 13px;color:var(--text);line-height:1.55}
+  .gc .why b{color:var(--teal-d);font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .gc .q3{margin-top:11px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted2);letter-spacing:.02em;line-height:1.5}
+  .gc .q3 b{color:var(--teal-d)}
+
+  /* channel triptych */
+  .channels{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:4px}
+  @media(max-width:820px){.channels{grid-template-columns:1fr}}
+  .chan{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .chan .ch-top{padding:15px 20px;border-bottom:1px solid var(--line);border-top:3px solid var(--caccent,var(--teal))}
+  .chan .ch-step{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--caccent,var(--teal));font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+  .chan .ch-step b{width:20px;height:20px;border-radius:50%;background:var(--caccent,var(--teal));color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:0 0 auto}
+  .chan .ch-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .chan .ch-name{font-family:"Archivo",sans-serif;font-weight:800;font-size:16px;color:var(--ink);display:flex;align-items:center;gap:9px}
+  .chan .ch-dot{width:10px;height:10px;border-radius:50%;background:var(--caccent,var(--teal));flex:0 0 auto}
+  .chan .ch-aff{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.04em;
+    padding:3px 9px;border-radius:999px;background:#f4f6f7;color:var(--muted);white-space:nowrap}
+  .chan .ch-form{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted2);letter-spacing:.02em;margin-top:9px}
+  .chan .ch-body{padding:15px 20px 19px;display:flex;flex-direction:column;flex:1}
+  .chan .ch-lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--teal-d);font-weight:600;margin-bottom:7px}
+  .chan .ch-title{font-family:"Archivo",sans-serif;font-weight:700;font-size:14.5px;line-height:1.3;color:var(--ink);margin-bottom:8px}
+  .chan .ch-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0}
+  .chan .ch-desc b{color:var(--text);font-weight:600}
+  .deploy-note{margin:20px 0 0;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--teal);
+    border-radius:11px;padding:16px 19px;font-size:13.5px;color:var(--text);line-height:1.6}
+  .deploy-note b{color:var(--ink)}
+  .deploy-note .hub-spoke{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--teal-d);
+    letter-spacing:.04em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:6px}
+
+  /* who panel */
+  .who{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:4px}
+  @media(max-width:820px){.who{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:460px){.who{grid-template-columns:1fr}}
+  .wc{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 20px}
+  .wc .wl{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:9px}
+  .wc .wv{font-family:"Archivo",sans-serif;font-weight:800;font-size:26px;color:var(--ink);line-height:1.05}
+  .wc .wv small{font-size:13px;color:var(--teal-d);font-weight:700}
+  .wc .ws{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.45}
+
+  footer{background:var(--ink);color:#9fb0ba;margin-top:64px}
+  .foot-inner{max-width:1180px;margin:0 auto;padding:40px 34px 56px}
+  .foot-inner .h{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+  .foot-inner p{font-size:13px;max-width:940px;margin:0 0 12px;line-height:1.65}
+  .foot-inner p b{color:#dfe7ec}
+
+  @media (prefers-reduced-motion:no-preference){
+    .pbar>i,.bar>i{animation:grow .8s cubic-bezier(.2,.7,.3,1) backwards}
+    @keyframes grow{from{width:0 !important}}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= STAGE ================= -->
+<section class="stage">
+  <div class="stage-inner">
+    <div class="reg">
+      <div class="mark"><i></i>KENT STATE MCLS</div>
+      <div class="coords">CONTENT INVENTORY &times; SPARKTORO AUDIENCE // /mcls</div>
+    </div>
+
+    <div class="hero">
+      <div class="coords" style="color:var(--teal);letter-spacing:.16em">A COVERAGE READOUT</div>
+      <h1>A <em>translation</em> library for an <ru>interpreting</ru> audience.</h1>
+      <p class="thesis">The blog is one of the deepest translation-career libraries on the open web - <b>116 posts</b> spanning every specialization from literary to logistics. But the people searching their way into this field over-index on something the site barely covers: <b>interpreting</b>, and above all <b>American Sign Language</b>. This readout lines the two up.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">116</div><div class="l">Posts in the blog</div></div>
+      <div class="stat"><div class="v">~80</div><div class="l">On translation craft</div></div>
+      <div class="stat"><div class="v rust">~7 <small>/ ~9</small></div><div class="l">On interpreting / ASL</div></div>
+      <div class="stat"><div class="v">25<small>%</small></div><div class="l">Audience = sign-lang interpreters</div></div>
+      <div class="stat"><div class="v">93<small>aff</small></div><div class="l">YouTube affinity (rank 1)</div></div>
+    </div>
+
+    <div class="note">
+      <div class="h">The one-line finding</div>
+      <p>The audience's strongest skill is <b>interpreting (37%)</b>, ahead of translation (30%), and its single largest job title is <b>sign-language interpreter</b>. Its highest-volume search is <b>"american sign language degree" (2,600/mo)</b>. The site's content is built almost entirely the other way around. The Q3 plan already started the pivot toward interpreting - the data says go further, and lead with ASL.</p>
+    </div>
+
+    <!-- FIGURE 01 -->
+    <div class="fig">
+      <div class="fig-head">
+        <div class="t"><small>Figure 01 // search demand vs coverage</small>What the audience is actually Googling</div>
+        <div class="d">Top terms this audience over-indexes on, sized by U.S. monthly search volume, tagged by how well the current blog covers them.</div>
+      </div>
+      <div class="panel">
+        <div class="prow"><div class="prank">01</div><div class="plabel">american sign language degree<span>2,600 / mo</span></div><div class="pbar"><i style="width:100%;background:var(--rust)"></i></div><div class="pscore">2,600</div><div class="pstat gap">Gap</div></div>
+        <div class="prow"><div class="prank">02</div><div class="plabel">asl interpreter certification<span>720 / mo &middot; RID, NIC</span></div><div class="pbar"><i style="width:53%;background:var(--rust)"></i></div><div class="pscore">720</div><div class="pstat gap">Gap</div></div>
+        <div class="prow"><div class="prank">03</div><div class="plabel">court interpreter training<span>460 / mo</span></div><div class="pbar"><i style="width:42%;background:var(--gold)"></i></div><div class="pscore">460</div><div class="pstat thin">Thin</div></div>
+        <div class="prow"><div class="prank">04</div><div class="plabel">us interpreter licensing<span>375 / mo</span></div><div class="pbar"><i style="width:38%;background:var(--rust)"></i></div><div class="pscore">375</div><div class="pstat gap">Gap</div></div>
+        <div class="prow"><div class="prank">05</div><div class="plabel">become a translator in us<span>313 / mo</span></div><div class="pbar"><i style="width:35%;background:var(--teal)"></i></div><div class="pscore">313</div><div class="pstat str">Strong</div></div>
+        <div class="prow"><div class="prank">06</div><div class="plabel">medical interpreter certification<span>317 / mo + 217 "how to"</span></div><div class="pbar"><i style="width:35%;background:var(--gold)"></i></div><div class="pscore">317</div><div class="pstat thin">Thin</div></div>
+        <div class="prow"><div class="prank">07</div><div class="plabel">master's in translation<span>280 / mo &middot; spikes to 1,100 in winter</span></div><div class="pbar"><i style="width:33%;background:var(--teal)"></i></div><div class="pscore">280</div><div class="pstat str">Strong</div></div>
+        <div class="prow"><div class="prank">08</div><div class="plabel">us interpreting schools<span>216 / mo</span></div><div class="pbar"><i style="width:29%;background:var(--gold)"></i></div><div class="pscore">216</div><div class="pstat thin">Thin</div></div>
+        <div class="prow"><div class="prank">09</div><div class="plabel">freelance translator usa<span>197 / mo</span></div><div class="pbar"><i style="width:28%;background:var(--teal)"></i></div><div class="pscore">197</div><div class="pstat str">Strong</div></div>
+        <div class="prow"><div class="prank">10</div><div class="plabel">interpreting master's degree<span>152 / mo</span></div><div class="pbar"><i style="width:24%;background:var(--rust)"></i></div><div class="pscore">152</div><div class="pstat gap">Gap</div></div>
+        <div class="pnote">Strong = a dedicated, ranking page exists &nbsp;//&nbsp; Thin = one post, refresh already planned in Q3 &nbsp;//&nbsp; Gap = no real page for it today. Six of the top ten are interpreting or ASL terms.</div>
+      </div>
+    </div>
+
+    <!-- FIGURE 02 -->
+    <div class="fig">
+      <div class="fig-head">
+        <div class="t"><small>Figure 02 // platform affinity</small>Where this audience actually spends time</div>
+        <div class="d">How much each platform over-indexes for this audience (0-100), with the role each should play. YouTube is the runaway leader - and for a visual language like ASL, that is not a coincidence.</div>
+      </div>
+      <div class="panel">
+        <div class="prow"><div class="prank">01</div><div class="plabel">YouTube<span>long-form video + ASL is natively visual</span></div><div class="pbar"><i style="width:94%;background:var(--teal)"></i></div><div class="pscore">93.5</div><div class="pstat make">Create</div></div>
+        <div class="prow"><div class="prank">02</div><div class="plabel">Facebook<span>Deaf-community + alumni groups</span></div><div class="pbar"><i style="width:76%;background:var(--gold)"></i></div><div class="pscore">76.3</div><div class="pstat amp">Amplify</div></div>
+        <div class="prow"><div class="prank">03</div><div class="plabel">Instagram<span>clips, captioned reels</span></div><div class="pbar"><i style="width:72%;background:var(--gold)"></i></div><div class="pscore">71.7</div><div class="pstat amp">Amplify</div></div>
+        <div class="prow"><div class="prank">04</div><div class="plabel">Reddit<span>r/ASL, r/TranslationStudies, r/medicalinterpreter</span></div><div class="pbar"><i style="width:70%;background:#6fcdd8"></i></div><div class="pscore">70.0</div><div class="pstat seed">Engage</div></div>
+        <div class="prow"><div class="prank">05</div><div class="plabel">LinkedIn<span>career-changers, short-form text</span></div><div class="pbar"><i style="width:60%;background:var(--teal)"></i></div><div class="pscore">59.9</div><div class="pstat make">Create</div></div>
+        <div class="prow"><div class="prank">06</div><div class="plabel">TikTok<span>declining for this group</span></div><div class="pbar"><i style="width:46%;background:var(--slate)"></i></div><div class="pscore">46.5</div><div class="pstat skip">Hold</div></div>
+        <div class="prow"><div class="prank">07</div><div class="plabel">X (Twitter)<span>thinning, low return</span></div><div class="pbar"><i style="width:43%;background:var(--slate)"></i></div><div class="pscore">43.2</div><div class="pstat skip">Hold</div></div>
+        <div class="pnote">Audio worth knowing: the audience's top podcast is The ATA Podcast (American Translators Association); its top YouTube channels are Gallaudet University and Translation Commons. Those are pitch + partnership targets, not just analytics.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAPER ================= -->
+<div class="paper">
+
+  <!-- WHO -->
+  <div class="sec-head"><span class="idx">00</span><h2>Who this audience is</h2></div>
+  <p class="sec-lead">SparkToro built the audience from people who research and work in translation and interpreting in the U.S. A few traits shape everything below: they are young, early-career, value-driven, and they lean hard toward signed and spoken interpreting.</p>
+  <div class="who">
+    <div class="wc"><div class="wl">Age</div><div class="wv">68<small>%</small></div><div class="ws">are 18-35. Prospective and early-career, not mid-life switchers.</div></div>
+    <div class="wc"><div class="wl">Top skill</div><div class="wv">Interpreting</div><div class="ws">37% list interpreting, ahead of translation (30%) and ASL (24%).</div></div>
+    <div class="wc"><div class="wl">Earns under $70k</div><div class="wv">66<small>%</small></div><div class="ws">ROI-motivated. Salary and "is it worth it" content lands hard.</div></div>
+    <div class="wc"><div class="wl">Where</div><div class="wv">National</div><div class="ws">CA, NY, FL, TX lead. Ohio sits at population parity - this content travels well beyond the local market.</div></div>
+  </div>
+
+  <!-- SECTION 01 -->
+  <div class="sec-head" style="margin-top:64px"><span class="idx">01</span><h2>The coverage map</h2></div>
+  <p class="sec-lead">Every blog post sorted into the clusters the audience actually signals for. The pattern is consistent: the site is <b>deepest exactly where search demand is most saturated</b> (translation craft) and <b>thinnest where intent is highest</b> (interpreting and ASL certification).</p>
+  <div class="tablecard">
+    <table>
+      <thead><tr><th>Content cluster</th><th>What the audience signals</th><th>Posts</th><th>Share of blog</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cluster">Translation craft<br>&amp; specializations</td>
+          <td class="signal">Real demand ("become a translator," "freelance translator"), but the long-tail specialty posts far outrun their search volume.</td>
+          <td class="num">~80</td>
+          <td><div class="bar"><i style="width:100%;background:var(--slate)"></i></div></td>
+          <td><span class="verdict v-over">Over-served</span></td>
+        </tr>
+        <tr>
+          <td class="cluster">Interpreting<br>(medical, court)</td>
+          <td class="signal">Interpreting is the #1 skill (37%). High-intent cert searches: medical (317), court training (460), licensing (375).</td>
+          <td class="num">~7</td>
+          <td><div class="bar"><i style="width:9%;background:var(--rust)"></i></div></td>
+          <td><span class="verdict v-gap">Gap</span></td>
+        </tr>
+        <tr>
+          <td class="cluster">ASL / sign language</td>
+          <td class="signal">Largest job title in the audience (sign-language interpreter, 25%). Biggest single search: "ASL degree," 2,600/mo.</td>
+          <td class="num">~9</td>
+          <td><div class="bar"><i style="width:11%;background:var(--rust)"></i></div></td>
+          <td><span class="verdict v-gap">Gap (soft)</span></td>
+        </tr>
+        <tr>
+          <td class="cluster">Spanish</td>
+          <td class="signal">Spanish skill (14%) and the ATA Spanish division. Career and proficiency angles well matched.</td>
+          <td class="num">~8</td>
+          <td><div class="bar"><i style="width:42%;background:var(--teal)"></i></div></td>
+          <td><span class="verdict v-str">Strong</span></td>
+        </tr>
+        <tr>
+          <td class="cluster">AI in language work</td>
+          <td class="signal">Live anxiety: "will AI replace interpreters." The site already ranks #1 for "ethics of AI translation."</td>
+          <td class="num">~7</td>
+          <td><div class="bar"><i style="width:40%;background:var(--teal)"></i></div></td>
+          <td><span class="verdict v-str">Strong</span></td>
+        </tr>
+        <tr>
+          <td class="cluster">Other languages<br>(Fr/De/Ja/Ru/Ar)</td>
+          <td class="signal">Niche per-language demand, mostly carried by the concentration pages rather than the blog (per Q2/Q3 plan).</td>
+          <td class="num">~6</td>
+          <td><div class="bar"><i style="width:18%;background:var(--gold)"></i></div></td>
+          <td><span class="verdict v-thin">By design</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="footnote">Counts are approximate - a handful of posts touch two clusters and a few cross-link from /appling. Inventory pulled live from the blog hub, 116 unique post URLs.</p>
+
+  <!-- SECTION 02 -->
+  <div class="sec-head" style="margin-top:64px"><span class="idx">02</span><h2>The four openings</h2></div>
+  <p class="sec-lead">Where audience demand and current coverage diverge most. The first two are net-new clusters; the second two sharpen work the Q3 plan already scoped. Each is a piece we would actually write.</p>
+  <div class="gaps">
+
+    <div class="gc">
+      <div class="rk"><i></i>Opening 01 &middot; biggest single gap</div>
+      <h3>Own the ASL interpreter pathway</h3>
+      <p>The audience's largest identity and largest search term are both ASL, and the site meets them with nine soft "benefits of learning ASL" posts. There is no page on getting certified or building the career.</p>
+      <div class="pitch">
+        <div class="lab"><span class="pen"></span>A piece we'd write</div>
+        <div class="ptitle">"How to Become a Certified ASL Interpreter: RID, NIC, and the Path in Ohio"</div>
+        <div class="pangle">A step-by-step explainer: what RID (Registry of Interpreters for the Deaf) and the NIC (National Interpreter Certification) actually are, education requirements, the exam, and where Kent's ASL program fits. Anchor a small cluster: ASL interpreter salary, and ASL in medical vs. educational settings.</div>
+      </div>
+      <div class="why"><b>Why it wins</b> &nbsp;"ASL degree" 2,600/mo + "ASL interpreter certification" 720/mo. 25% of the audience already are sign-language interpreters, and they follow RID, the NAD, and Gallaudet - exactly the authorities this page would cite.</div>
+      <div class="q3"><b>Vs. plan:</b> extends the July interpreter-certification refresh into a dedicated ASL track instead of one shared page.</div>
+    </div>
+
+    <div class="gc">
+      <div class="rk"><i></i>Opening 02 &middot; high-intent cluster</div>
+      <h3>A certification-led interpreter hub</h3>
+      <p>Medical and court interpreting are proven converters for the program, but the searches are about getting credentialed, and the current posts are descriptive ("what is a court interpreter") rather than instructional.</p>
+      <div class="pitch">
+        <div class="lab"><span class="pen"></span>A piece we'd write</div>
+        <div class="ptitle">"Medical Interpreter Certification: CCHI vs. CoreCNHI, Step by Step"</div>
+        <div class="pangle">Reframe the medical and court interpreter posts around the credential path - boards, eligibility, exam, cost, timeline - then interlink them as a hub. The "translation vs. interpretation" post becomes the top-of-funnel entry point.</div>
+      </div>
+      <div class="why"><b>Why it wins</b> &nbsp;"medical interpreter certification" 317/mo plus "how to become a medical interpreter" 217/mo; "court interpreter training" 460/mo. Audience industries include hospital/health care, legal services, and judiciary.</div>
+      <div class="q3"><b>Vs. plan:</b> makes the August medical + court refreshes certification-first, not just longer.</div>
+    </div>
+
+    <div class="gc amber">
+      <div class="rk"><i></i>Opening 03 &middot; positioning</div>
+      <h3>Be findable as "interpreting," not only "translation"</h3>
+      <p>The degree reads as a translation program, but a real slice of the audience searches "interpreting master's degree" and "US interpreting schools." Those searchers may not recognize the program as for them.</p>
+      <div class="pitch">
+        <div class="lab"><span class="pen"></span>A piece we'd write</div>
+        <div class="ptitle">"Translation or Interpreting? How One M.A. Prepares You for Both Careers"</div>
+        <div class="pangle">A decision-guide that explicitly claims the interpreting query, explains how the coursework supports both paths, and routes readers to the right next step. Pair it with interpreting-aware anchor text from the main program page.</div>
+      </div>
+      <div class="why"><b>Why it wins</b> &nbsp;"interpreting master's degree" 152/mo, "US interpreting schools" 216/mo, "interpreter licensing" 375/mo - all currently landing on translation-framed pages the audience may bounce from.</div>
+      <div class="q3"><b>Vs. plan:</b> new framing task; complements the Q3 cannibalization and CTA work without overlapping it.</div>
+    </div>
+
+    <div class="gc amber">
+      <div class="rk"><i></i>Opening 04 &middot; decision content</div>
+      <h3>Answer "is it worth it" with numbers</h3>
+      <p>Two-thirds of the audience earns under $70k and is weighing a degree. Salary and "how much" content is the highest-intent, most AI-quotable format for this group - and it should cover interpreters, not just translators.</p>
+      <div class="pitch">
+        <div class="lab"><span class="pen"></span>A piece we'd write</div>
+        <div class="ptitle">"How Much Do Interpreters and Translators Make? A 2026 Salary Guide by Specialization"</div>
+        <div class="pangle">Structured ranges by setting and specialization (medical, legal, ASL, localization, freelance vs. staff), BLS outlook, and how an M.A. plus certification raises the ceiling. Clear methodology so AI answer engines quote it.</div>
+      </div>
+      <div class="why"><b>Why it wins</b> &nbsp;"How much" queries are a top trigger for AI Overviews and are exactly what a price-sensitive, ROI-driven audience searches before enrolling.</div>
+      <div class="q3"><b>Vs. plan:</b> broadens the August translator-salary post to include interpreting, the higher-demand half of the audience.</div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 03 -->
+  <div class="sec-head" style="margin-top:64px"><span class="idx">03</span><h2>One topic, three channels</h2></div>
+  <p class="sec-lead">Each opening above is one recording away from three assets. Because YouTube is the runaway platform - and because ASL is a <b>visual language that only fully works on video</b> - the most efficient order starts with the camera, then harvests the text.</p>
+  <div class="channels">
+    <div class="chan" style="--caccent:var(--rust)">
+      <div class="ch-top">
+        <div class="ch-step"><b>1</b>Record first</div>
+        <div class="ch-row"><div class="ch-name"><span class="ch-dot"></span>YouTube</div><div class="ch-aff">affinity 93.5</div></div>
+        <div class="ch-form">long-form video / signed + captioned</div>
+      </div>
+      <div class="ch-body">
+        <div class="ch-lab">Form</div>
+        <div class="ch-title">A faculty or alum walks through the certification path on camera</div>
+        <p class="ch-desc">Highest-affinity channel, and for ASL topics it is the only honest medium - you can <b>show</b> the language. Partner targets already in-audience: Gallaudet, Translation Commons.</p>
+      </div>
+    </div>
+    <div class="chan" style="--caccent:var(--teal)">
+      <div class="ch-top">
+        <div class="ch-step"><b>2</b>The transcript is the post</div>
+        <div class="ch-row"><div class="ch-name"><span class="ch-dot"></span>Blog</div><div class="ch-aff">SEO home base</div></div>
+        <div class="ch-form">long-form written / the ranking asset</div>
+      </div>
+      <div class="ch-body">
+        <div class="ch-lab">Form</div>
+        <div class="ch-title">Clean up the transcript into the certification explainer</div>
+        <p class="ch-desc">The video transcript is 80% of the blog draft. Add structure, the credential names, and a request-info call to action. <b>No doubled effort</b> - this is the page that ranks and converts.</p>
+      </div>
+    </div>
+    <div class="chan" style="--caccent:var(--blue)">
+      <div class="ch-top">
+        <div class="ch-step"><b>3</b>Slice into a series</div>
+        <div class="ch-row"><div class="ch-name"><span class="ch-dot"></span>LinkedIn</div><div class="ch-aff">affinity 59.9</div></div>
+        <div class="ch-form">short-form text / 3-5 posts</div>
+      </div>
+      <div class="ch-body">
+        <div class="ch-lab">Form</div>
+        <div class="ch-title">Each section becomes a standalone career-changer post</div>
+        <p class="ch-desc">"RID vs. NIC, explained." "What an ASL interpreter actually earns." Career-changers live here. <b>One recording, three channels, three audiences.</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="deploy-note">
+    <span class="hub-spoke">Hub and spoke</span>
+    Run this on the four openings and the result is four video-anchored topic hubs, each feeding a ranking page and a week of social - and each one pointed at the part of the audience the current blog is quietest about. It also doubles as the fix for the internal-linking depth problem the Screaming Frog audit flagged: new hubs give the buried interpreter and ASL pages somewhere authoritative to link from.
+  </div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="foot-inner">
+    <div class="h">How this was built</div>
+    <p><b>Content inventory:</b> a live crawl of the /mcls blog returned 116 unique post URLs, sorted by hand into the clusters above. Counts are approximate where a post spans two topics.</p>
+    <p><b>Audience:</b> a SparkToro audience ("Aspiring translators and interpreters in the U.S.," report db1c8bc3a718) supplied the demographics, the search keywords with monthly volumes, the platform-affinity scores behind Figure 02, and the channel and podcast signals. Affinity is how far a group over-indexes against the average internet user; search volumes are U.S. monthly estimates.</p>
+    <p><b>Prioritization:</b> the openings were weighed against the existing Q2 and Q3 strategies so the recommendations sharpen the current roadmap rather than compete with it. Search volumes move month to month and should be treated as direction, not a forecast.</p>
+  </div>
+</footer>
+
+</body>
+</html>
